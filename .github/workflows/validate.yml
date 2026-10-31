@@ -1,0 +1,25 @@
+name: validate
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '17 5 * * 1'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - name: Check the index (schema, order, file names)
+        run: npm run validate
+      - name: Download every archive and check its sha256
+        run: npm run validate:online
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

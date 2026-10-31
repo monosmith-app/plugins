@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/monosmith-app/plugins/main/index.schema.json",
+  "title": "MonoSmith plugin marketplace index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "plugins"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schema": { "const": 1, "description": "Version of this format." },
+    "plugins": {
+      "type": "object",
+      "description": "Plugins by name. The name is the one in the plugin's plugin.json.",
+      "propertyNames": { "pattern": "^[a-z0-9][a-z0-9-]{0,63}$" },
+      "additionalProperties": { "$ref": "#/$defs/plugin" }
+    }
+  },
+  "$defs": {
+    "plugin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description", "license", "versions"],
+      "properties": {
+        "description": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "enum": ["language", "toolchain", "structure", "scaffold", "deploy", "ci"] },
+          "description": "The roles the plugin fills (decision 0021)."
+        },
+        "kinds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "description": "Project kinds the plugin scaffolds (decision 0039)."
+        },
+        "languages": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9+#-]*$" },
+          "description": "Languages the plugin works with."
+        },
+        "homepage": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "license": { "type": "string", "minLength": 1, "description": "An SPDX identifier." },
+        "versions": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": { "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+([-+][0-9A-Za-z.+-]+)?$" },
+          "additionalProperties": { "$ref": "#/$defs/version" }
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "sha256"],
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https://[^ ]+\\.smith-plugin\\.zip$",
+          "description": "https URL of the archive made by `smith plugin pack`."
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the archive, lowercase hex."
+        }
+      }
+    }
+  }
+}
