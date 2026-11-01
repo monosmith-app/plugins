@@ -29,9 +29,9 @@ marketplace = "https://example.com/plugins/index.json"
 or in the environment: `SMITH_MARKETPLACE=https://example.com/plugins/index.json`. The variable wins.
 A local file path also works.
 
-While this repository is private, smith sends a token to GitHub only: `GITHUB_TOKEN` or
-`GH_TOKEN`, else the token of `gh auth token` when the GitHub CLI is installed. With none, smith
-says what to set.
+This repository is public, so smith needs no token to read the index. If you point `SMITH_MARKETPLACE`
+at a private index, smith sends a token to GitHub only: `GITHUB_TOKEN` or `GH_TOKEN`, else the token
+of `gh auth token` when the GitHub CLI is installed. With none, smith says what to set.
 
 ## The index
 
